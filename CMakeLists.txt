@@ -16,7 +16,11 @@ add_executable(Rocket_Launcher main.cpp
         Player.cpp
         Player.h
         Game.cpp
-        Game.h)
+        Game.h
+        Bullet.cpp
+        Bullet.h
+        Missile.cpp
+        Missile.h)
 
 target_link_libraries(Rocket_Launcher PRIVATE sfml-graphics sfml-window sfml-system)
 

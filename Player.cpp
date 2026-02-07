@@ -3,8 +3,10 @@
 
 // Private functions
 void Player::initVaribles() {
-    this->movementSpeed = 4.f;
+    this->movementSpeed = 5.f;
     this->rotationSpeed = 4.f; // 4 degrees per frames
+    this->attackCoolDownMax = 10.f;
+    this->attackCoolDown = this->attackCoolDownMax;
 }
 
 void Player::initTexture() {
@@ -38,17 +40,39 @@ Player::~Player() {
 }
 
 // Accessors
-const sf::Vector2f & Player::getPost() {
-    this->sprite.getPosition();
+const sf::Vector2f & Player::getPos() {
+    return this->sprite.getPosition();
+}
+
+const sf::FloatRect Player::getBounds() const {
+    return this->sprite.getGlobalBounds();
+}
+
+float Player::getRotation() const {
+    return this->sprite.getRotation();
 }
 
 // Functions
+const bool Player::canAttack() {
+    if (this->attackCoolDown >= this->attackCoolDownMax) {
+        this->attackCoolDown = 0.f;
+        return true;
+    }
+    return false;
+}
+
+void Player::updateAttack() {
+    if (this->attackCoolDown < this->attackCoolDownMax) {
+        this->attackCoolDown += 0.5f;
+    }
+}
+
 void Player::updateInputs() {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
         this->sprite.rotate(-this->rotationSpeed);
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         this->sprite.rotate(this->rotationSpeed);
     }
 }
@@ -58,7 +82,7 @@ void Player::updateMovement(sf::Vector2f mousePos) {
     sf::Vector2f playerPos = this->sprite.getPosition();
     sf::Vector2f mouseDir = mousePos - playerPos; // direction
 
-    // distance of the vector
+    // distance of the vector (magnitude)
     float length = std::sqrt(mouseDir.x * mouseDir.x + mouseDir.y * mouseDir.y);
 
     // Nomalize and move only if we're far from the mouse
@@ -71,6 +95,7 @@ void Player::updateMovement(sf::Vector2f mousePos) {
 void Player::update(sf::Vector2f mousePos) {
     this->updateInputs();
     this->updateMovement(mousePos);
+    this->updateAttack();
 }
 
 void Player::render(sf::RenderTarget &target) {

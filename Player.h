@@ -14,6 +14,10 @@ private:
     float movementSpeed;
     float rotationSpeed;
 
+    // Shot
+    float attackCoolDown;
+    float attackCoolDownMax;
+
     // Private functions
     void initVaribles();
     void initTexture();
@@ -24,9 +28,14 @@ public:
     virtual ~Player();
 
     // Accessor
-    const sf::Vector2f& getPost();
+    const sf::Vector2f& getPos();
+    const sf::FloatRect getBounds() const;
+    float getRotation() const;
 
     // Functions
+    const bool canAttack(); // Check and reset the cooldown
+    void updateAttack(); // Increase the cooldown counter
+
     void updateInputs();
     void updateMovement(sf::Vector2f mousePos);
     void update(sf::Vector2f mousePos);
